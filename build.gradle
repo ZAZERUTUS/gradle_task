@@ -34,6 +34,24 @@ dependencies {
     implementation project(':ulils')
 }
 
+task bildModuleUlils(type: GradleBuild) {
+    buildFile 'ulils/build.gradle'
+    tasks = ['build']
+    startParameter.projectProperties = [jarDir: "/jardir"]
+}
+
+task copyJarModuleUlilsInRoot (type: Copy) {
+    dependsOn(bildModuleUlils)
+
+    from ("ulils/build/libs") {
+        include "*"
+        rename("ulils.*jar", "my_lib.jar")
+    }
+    into("dynamicJars")
+}
+
+compileJava.dependsOn copyJarModuleUlilsInRoot
+
 test {
     useJUnitPlatform()
     finalizedBy(tasks.jacocoTestReport)
