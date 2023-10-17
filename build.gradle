@@ -1,6 +1,5 @@
 plugins {
     id 'java'
-    id 'application'
     id 'jacoco'
 }
 
@@ -19,7 +18,6 @@ task fatJar(type: Jar) {
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
     }
     from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-    //from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } setDuplicatesStrategy(DuplicatesStrategy.INCLUDE) }
     with jar
 }
 
@@ -32,22 +30,25 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 
     implementation project(':ulils')
+    implementation project(':core')
+    implementation project(':core_jar')
+
 }
 
-task bildModuleUlils(type: GradleBuild) {
+tasks.register('bildModuleUlils', GradleBuild) {
     buildFile 'ulils/build.gradle'
     tasks = ['build']
     startParameter.projectProperties = [jarDir: "/jardir"]
 }
 
-task copyJarModuleUlilsInRoot (type: Copy) {
+tasks.register('copyJarModuleUlilsInRoot', Copy) {
     dependsOn(bildModuleUlils)
 
-    from ("ulils/build/libs") {
+    from("ulils/build/libs") {
         include "*"
         rename("ulils.*jar", "my_lib.jar")
     }
-    into("dynamicJars")
+    into("core_jar/build/dynamicJars")
 }
 
 compileJava.dependsOn copyJarModuleUlilsInRoot
