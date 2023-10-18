@@ -28,6 +28,6 @@ WORKDIR /tests
 VOLUME /tests
 CMD ping 127.0.0.1
 
-#sudo docker pull alpine
+#sudo docker pull ubuntu
 #sudo docker build -t test .
-#docker run --rm -v C:\Users\zazer\IdeaProjects\gradle_task:/tests -it test bash
+#docker run --rm -v cd:/tests -it test bash
